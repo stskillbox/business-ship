@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const cheerio = require('cheerio');
+const { parseDocument } = require('htmlparser2');
 const Typograf = require('typograf');
 
 const inputArg = process.argv[2];
@@ -18,12 +18,9 @@ if (!fs.existsSync(filePath)) {
 }
 
 const html = fs.readFileSync(filePath, 'utf8');
-const $ = cheerio.load(html, { decodeEntities: false });
 const tp = new Typograf({ locale: ['ru', 'en-US'] });
 
 tp.enableRule('common/nbsp/*');
-tp.enableRule('ru/optalign/*');
-tp.enableRule('ru/punctuation/quote');
 tp.enableRule('ru/space/afterPunctuation');
 tp.enableRule('ru/space/year');
 tp.enableRule('ru/space/centuries');
@@ -31,26 +28,59 @@ tp.enableRule('ru/space/month');
 tp.enableRule('ru/typo/quotation');
 tp.enableRule('common/punctuation/hellip');
 tp.enableRule('common/punctuation/mdash');
-tp.disableRule('common/html/url');
+tp.disableRule('ru/optalign/*');
 
-function shouldSkipTextNode(node) {
-  if (!node || node.type !== 'text') return true;
-  if (!node.data || !node.data.trim()) return true;
-
-  const parent = node.parent;
-  if (!parent || !parent.name) return false;
-
-  return ['script', 'style'].includes(parent.name);
-}
-
-function typografizeNode(node) {
-  if (shouldSkipTextNode(node)) return;
-  node.data = tp.execute(node.data);
-}
-
-$('*').contents().each((_, node) => {
-  typografizeNode(node);
+const document = parseDocument(html, {
+  decodeEntities: false,
+  withStartIndices: true,
+  withEndIndices: true
 });
 
-fs.writeFileSync(filePath, $.html(), 'utf8');
+function shouldSkipTextNode(node, parentTag) {
+  if (!node || node.type !== 'text') return true;
+  if (!node.data || !node.data.trim()) return true;
+  return ['script', 'style'].includes(parentTag);
+}
+
+function collectTextNodes(nodes, parentTag, replacements) {
+  if (!nodes) return;
+
+  for (const node of nodes) {
+    const tagName = node.type === 'tag' || node.type === 'script' || node.type === 'style'
+      ? node.name
+      : parentTag;
+
+    if (!shouldSkipTextNode(node, parentTag) && Number.isInteger(node.startIndex) && Number.isInteger(node.endIndex)) {
+      const original = node.data;
+      const match = original.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      const leading = match ? match[1] : '';
+      const core = match ? match[2] : original;
+      const trailing = match ? match[3] : '';
+      const formattedCore = tp.execute(core);
+      const formatted = `${leading}${formattedCore}${trailing}`;
+
+      if (formatted !== original) {
+        replacements.push({
+          start: node.startIndex,
+          end: node.endIndex + 1,
+          value: formatted
+        });
+      }
+    }
+
+    if (node.children && node.children.length) {
+      collectTextNodes(node.children, tagName, replacements);
+    }
+  }
+}
+
+const replacements = [];
+collectTextNodes(document.children, '', replacements);
+
+let output = html;
+for (const replacement of replacements.sort((a, b) => b.start - a.start)) {
+  output = output.slice(0, replacement.start) + replacement.value + output.slice(replacement.end);
+}
+
+fs.writeFileSync(filePath, output, 'utf8');
 console.log(`Typografized: ${path.relative(process.cwd(), filePath)}`);
