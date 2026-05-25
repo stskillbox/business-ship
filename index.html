@@ -1148,7 +1148,7 @@ img { display: block; max-width: 100%; }
 
 .partners-layout {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) 228px minmax(0, 1fr);
   align-items: stretch;
 }
 
@@ -1159,12 +1159,17 @@ img { display: block; max-width: 100%; }
   gap: 28px;
 }
 
+.partners-layout .partner-simple:first-child .partner-desc {
+  margin-left: auto;
+}
+
 .partner-ship-col {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 32px 24px;
   position: relative;
+  transform: translateX(-50px);
 }
 
 .partner-ship-col img {
@@ -1371,7 +1376,7 @@ img { display: block; max-width: 100%; }
   font-size: 15px;
   line-height: 1.55;
   color: var(--text-dim);
-  max-width: 460px;
+  max-width: 420px;
 }
 
 .partner-tags {
@@ -1593,6 +1598,11 @@ a.value:hover { color: var(--primary); }
   line-height: 1.5;
   color: var(--text-dim);
   cursor: pointer;
+}
+
+.checkbox label a {
+  color: var(--primary);
+  text-decoration-color: var(--primary);
 }
 
 .form-submit {
@@ -2925,7 +2935,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
           <img src="./assets/partner-gazprom.png" alt="Газпром" class="partner-logo-img gazprom">
         </div>
         <p class="partner-desc">
-          ООО «Газпромнефть – Цифровые решения» разрабатывает и внедряет ИТ-продукты для крупного бизнеса. Берём на себя полный цикл: от анализа до запуска и поддержки. Работаем с промышленностью и ТЭК, где важны надёжность и непрерывность процессов. Делаем системы для управления производством, ТОиР, мониторинга оборудования и цепочек поставок. Автоматизируем процессы и связываем системы между собой
+          ООО&nbsp;«Газпромнефть&nbsp;— Цифровые решения» разрабатывает и&nbsp;внедряет ИТ-продукты для&nbsp;крупного бизнеса. Берём на&nbsp;себя полный цикл: от&nbsp;анализа до&nbsp;запуска и&nbsp;поддержки. Работаем с&nbsp;промышленностью и&nbsp;ТЭК, где важны надёжность и&nbsp;непрерывность процессов. Делаем системы для&nbsp;управления производством, ТОиР, мониторинга оборудования и&nbsp;цепочек поставок. Автоматизируем процессы и&nbsp;связываем системы между собой
         </p>
       </div>
 
@@ -2938,7 +2948,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
           <img src="./assets/partner-t1.svg" alt="Т1" class="partner-logo-img t1">
         </div>
         <p class="partner-desc">
-          Системы для управления производством, мониторинга оборудования и цепочек поставок. Автоматизация процессов и связывание систем между собой для крупнейших промышленных заказчиков
+          ИТ-холдинг Т1&nbsp;— многопрофильный холдинг, один из&nbsp;лидеров российского ИТ-рынка, является партнёром ключевых производителей и&nbsp;разработчиков в&nbsp;сфере информационных технологий. Компании холдинга ведут свою историю с&nbsp;1992&nbsp;года. В&nbsp;штате&nbsp;— более 26&nbsp;тысяч сотрудников. В&nbsp;2024&nbsp;году выручка холдинга составила 249,6&nbsp;млрд рублей без&nbsp;НДС. По&nbsp;версии аналитических агентств CNews Analytics и&nbsp;RAEX Т1&nbsp;является крупнейшей ИТ-компанией в&nbsp;России.
         </p>
       </div>
     </div>
@@ -2984,14 +2994,18 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
         <p style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;color:var(--primary);text-transform:uppercase;padding:10px 0 4px;">Пожалуйста, обратите внимание, эти данные будут указаны на вашем бейдже</p>
         <div class="field">
           <label for="company">Компания</label>
-          <input type="text" id="company" placeholder="ООО &quot;Компания&quot;" required="">
+          <input type="text" id="company" placeholder="Компания" required="">
+        </div>
+        <div class="field">
+          <label for="position">Должность</label>
+          <input type="text" id="position" placeholder="Должность" required="">
         </div>
         <div class="checkbox">
           <input type="checkbox" id="consent" required="">
-          <label for="consent">Согласен/сна на передачу и обработку персональных данных в соответствии с политикой конфиденциальности.</label>
+          <label for="consent">Я даю согласие на обработку моих персональных данных в соответствии с <a href="#" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a> и <a href="#" target="_blank" rel="noopener noreferrer">Согласием на обработку ПДн</a>.</label>
         </div>
         <button type="submit" class="form-submit">
-          Я в деле
+          Подтвердить участие
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9 L15 9 M9 3 L15 9 L9 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </button>
       </form>
@@ -3471,6 +3485,7 @@ function handleSubmit(e) {
   const firstNameVal = document.getElementById('firstName').value.trim();
   const lastNameVal = document.getElementById('lastName').value.trim();
   const companyVal = document.getElementById('company').value.trim();
+  const positionVal = document.getElementById('position').value.trim();
   const consent = document.getElementById('consent').checked;
 
   if (!emailVal || !emailVal.includes('@')) {
@@ -3485,6 +3500,7 @@ function handleSubmit(e) {
   if (!firstNameVal) showError('firstName', 'Введите имя');
   if (!lastNameVal) showError('lastName', 'Введите фамилию');
   if (!companyVal) showError('company', 'Введите название компании');
+  if (!positionVal) showError('position', 'Введите должность');
   if (!consent) { valid = false; }
 
   if (!valid) return;
