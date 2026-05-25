@@ -3348,7 +3348,14 @@ window.addEventListener('resize', updateWhoCreature);
 (function () {
   const group  = document.getElementById('heroMotionGroup');
   const heroEl = document.querySelector('.hero');
-  if (!group || !heroEl) return;
+  const footer = document.querySelector('.footer');
+  if (!group || !heroEl || !footer) return;
+
+  function getMaxHeroParallax(offset) {
+    const heroTop = heroEl.getBoundingClientRect().top + window.scrollY;
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+    return Math.max(0, footerTop - heroTop - offset);
+  }
 
   // ждём конца CSS анимации (0.6s delay + 2.4s duration = 3s)
   // потом снимаем CSS анимацию и берём управление через JS
@@ -3358,7 +3365,8 @@ window.addEventListener('resize', updateWhoCreature);
     let currentY = 0; // стартуем с 0 — плавно догоняем реальный скролл
 
     function tick() {
-      const targetY = window.scrollY * 1.3;
+      const maxY = getMaxHeroParallax(280);
+      const targetY = Math.min(window.scrollY * 1.3, maxY);
       currentY += (targetY - currentY) * 0.12; // lerp — нет резкого прыжка
       group.style.transform = `translateX(100px) translateY(${currentY.toFixed(2)}px)`;
       group.style.opacity   = '1';
@@ -3372,11 +3380,18 @@ window.addEventListener('resize', updateWhoCreature);
 (function () {
   const text   = document.getElementById('heroRouteText');
   const heroEl = document.querySelector('.hero');
-  if (!text || !heroEl) return;
+  const footer = document.querySelector('.footer');
+  if (!text || !heroEl || !footer) return;
+
+  function getMaxTextParallax(offset) {
+    const heroTop = heroEl.getBoundingClientRect().top + window.scrollY;
+    const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+    return Math.max(0, footerTop - heroTop - offset);
+  }
 
   function animate() {
-    const scrollY = window.scrollY;
-    const y = scrollY * 1.1; // чуть медленнее корабля
+    const maxY = getMaxTextParallax(220);
+    const y = Math.min(window.scrollY * 1.1, maxY); // чуть медленнее корабля
     text.style.transform = `translateY(${y.toFixed(2)}px)`;
     requestAnimationFrame(animate);
   }
