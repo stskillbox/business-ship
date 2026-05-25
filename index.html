@@ -1614,6 +1614,20 @@ a.value:hover { color: var(--primary); }
 
 .form-submit:hover { background: var(--neutral); }
 
+.form-success {
+  display: none;
+  margin-top: 20px;
+  max-width: 640px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--primary);
+}
+
+.form-success.is-visible {
+  display: block;
+}
+
 @media (max-width: 900px) {
   .form-grid { grid-template-columns: 1fr; gap: 40px; }
   .field-row { grid-template-columns: 1fr; }
@@ -2951,6 +2965,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
           Я в деле
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9 L15 9 M9 3 L15 9 L9 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </button>
+        <p class="form-success" id="formSuccess">Спасибо, ваша заявка отправлена на модерацию. Дождитесь подтверждения регистрации на указанный вами электронный адрес в течение 3х дней.</p>
       </form>
     </div>
   </div>
@@ -3387,6 +3402,8 @@ function handleSubmit(e) {
 
   document.querySelectorAll('#leadForm .field.error').forEach(f => f.classList.remove('error'));
   document.querySelectorAll('#leadForm .field-error').forEach(f => f.remove());
+  const success = document.getElementById('formSuccess');
+  if (success) success.classList.remove('is-visible');
 
   let valid = true;
 
@@ -3423,17 +3440,8 @@ function handleSubmit(e) {
 
   if (!valid) return;
 
-  const btn = e.target.querySelector('.form-submit');
-  const orig = btn.innerHTML;
-  btn.textContent = 'Спасибо! Маша свяжется ✓';
-  btn.style.background = 'var(--neutral)';
-  setTimeout(() => {
-    btn.innerHTML = orig;
-    btn.style.background = '';
-    e.target.reset();
-    document.querySelectorAll('#leadForm .field.error').forEach(f => f.classList.remove('error'));
-    document.querySelectorAll('#leadForm .field-error').forEach(f => f.remove());
-  }, 3000);
+  e.target.reset();
+  if (success) success.classList.add('is-visible');
 }
 
 // ============== PHOTO SLIDER ==============
