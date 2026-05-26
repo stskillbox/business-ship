@@ -1267,6 +1267,11 @@ img { display: block; max-width: 100%; }
   max-width: 420px;
 }
 
+.partner-desc-secondary {
+  display: block;
+  margin-top: 6px;
+}
+
 .partner-tags {
   display: flex;
   flex-wrap: wrap;
@@ -1442,17 +1447,23 @@ a.value:hover { color: var(--primary); }
 .field-hint { font-family: var(--font-mono); font-size: var(--type-label); letter-spacing: 0.04em; color: var(--primary); text-transform: uppercase; margin-top: 2px; }
 
 .field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
 }
 
 .field-row .field {
-  border-bottom: none;
-  border-right: 1px solid var(--line);
-  padding: 18px 20px 18px 0;
+  border-right: none;
+  padding: 18px 0;
 }
-.field-row .field:last-child { border-right: none; padding-left: 20px; padding-right: 0; }
+.field-row .field:last-child { padding-left: 0; padding-right: 0; }
+
+.form-badge-note {
+  font-family: var(--font-body);
+  font-size: var(--type-ui);
+  line-height: 1.5;
+  color: var(--primary);
+  padding: 10px 0 4px;
+}
 
 .checkbox {
   display: grid;
@@ -1568,7 +1579,6 @@ a.value:hover { color: var(--primary); }
 
 @media (max-width: 900px) {
   .form-grid { grid-template-columns: 1fr; gap: 40px; }
-  .field-row { grid-template-columns: 1fr; }
   .field-row .field { border-right: none; padding: 18px 0; border-bottom: 1px solid var(--line); }
   .field-row .field:last-child { border-bottom: none; padding-left: 0; padding-right: 0; }
 }
@@ -2779,7 +2789,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
           <img src="./assets/GPN.svg" alt="GPN" class="partner-logo-img gazprom">
         </div>
         <p class="partner-desc">
-          ООО «Газпромнефть — Цифровые решения» разрабатывает и внедряет ИТ-продукты для крупного бизнеса. Берем на себя полный цикл: от анализа до запуска и поддержки. Работаем с промышленностью и ТЭК, где важны надежность и непрерывность процессов. Делаем системы для управления производством, ТОиР, мониторинга оборудования и цепочек поставок. Автоматизируем процессы и связываем системы между собой.
+          ООО «Газпромнефть — Цифровые решения» разрабатывает и внедряет ИТ-продукты для крупного бизнеса. Берем на себя полный цикл: от анализа до запуска и поддержки. Работаем с промышленностью и ТЭК, где важны надежность и непрерывность процессов.<span class="partner-desc-secondary">Делаем системы для управления производством, ТОиР, мониторинга оборудования и цепочек поставок. Автоматизируем процессы и связываем системы между собой.</span>
         </p>
       </div>
 
@@ -2818,32 +2828,32 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
         <div class="field-row">
           <div class="field">
             <label for="email">E-mail</label>
-            <input type="email" id="email" placeholder="ivan@company.ru" required="" oninput="filterEmail(this)">
+            <input type="email" id="email" required="" oninput="filterEmail(this)">
           </div>
           <div class="field">
             <label for="phone">Телефон</label>
-            <input type="tel" id="phone" placeholder="+7 (000) 000-00-00" required="" onfocus="initPhone(this)" oninput="filterPhone(this)">
+            <input type="tel" id="phone" required="" onfocus="initPhone(this)" oninput="filterPhone(this)">
           </div>
         </div>
         <div class="field-row">
           <div class="field">
             <label for="firstName">Имя</label>
-            <input type="text" id="firstName" placeholder="Иван" required="">
+            <input type="text" id="firstName" required="">
           </div>
           <div class="field">
             <label for="lastName">Фамилия</label>
-            <input type="text" id="lastName" placeholder="Петров" required="">
+            <input type="text" id="lastName" required="">
           </div>
         </div>
-        <p style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;color:var(--primary);text-transform:uppercase;padding:10px 0 4px;">Пожалуйста, обратите внимание, эти данные будут указаны на вашем бейдже</p>
         <div class="field">
           <label for="company">Компания</label>
-          <input type="text" id="company" placeholder="Компания" required="">
+          <input type="text" id="company" required="">
         </div>
         <div class="field">
           <label for="position">Должность</label>
-          <input type="text" id="position" placeholder="Должность" required="">
+          <input type="text" id="position" required="">
         </div>
+        <p class="form-badge-note">Пожалуйста, обратите внимание, эти данные будут указаны на вашем бейдже</p>
         <div class="checkbox">
           <input type="checkbox" id="consent" required="">
           <label for="consent">Даю согласие на участие в мероприятии и обработку персональных данных <a href="./assets/SOPD GK Innotech.pdf" target="_blank" rel="noopener noreferrer">ООО «ГК «Иннотех»</a></label>
