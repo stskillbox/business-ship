@@ -38,6 +38,23 @@
   --type-t3: 16px;
   --type-ui: 13px;
   --type-label: 11px;
+
+  /* Fluid vertical rhythm — scale smoothly between mobile and desktop */
+  --section-pad-x: clamp(16px, 4vw, 64px);
+  --section-pad-y: clamp(40px, 6vw, 80px);
+  --section-head-gap: clamp(24px, 5vw, 64px);
+  --block-gap: clamp(24px, 4vw, 56px);
+
+  /* Mobile-only unified type scale (applied via @media ≤768) */
+  --m-h1: clamp(26px, 7vw, 36px);
+  --m-h2: clamp(22px, 5.5vw, 28px);
+  --m-h3: clamp(17px, 4.5vw, 22px);
+  --m-t1: 16px;
+  --m-t2: 13px;
+
+  /* Mobile-only spacing system */
+  --m-gap-section: 48px;
+  --m-gap-title: 24px;
 }
 
 *, *::before, *::after {
@@ -71,14 +88,14 @@ img { display: block; max-width: 100%; }
 .section {
   position: relative;
   border-top: 1px solid var(--line);
-  padding: 80px 64px;
+  padding: var(--section-pad-y) var(--section-pad-x);
 }
 
 .section::before {
   /* left rail line */
   content: "";
   position: absolute;
-  left: 64px;
+  left: var(--section-pad-x);
   top: 0;
   bottom: 0;
   width: 1px;
@@ -90,7 +107,7 @@ img { display: block; max-width: 100%; }
   /* right rail line */
   content: "";
   position: absolute;
-  right: 64px;
+  right: var(--section-pad-x);
   top: 0;
   bottom: 0;
   width: 1px;
@@ -109,8 +126,8 @@ img { display: block; max-width: 100%; }
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 16px;
-  margin-bottom: 64px;
+  gap: clamp(8px, 1.4vw, 16px);
+  margin-bottom: var(--section-head-gap);
 }
 
 .section-tag {
@@ -141,9 +158,6 @@ img { display: block; max-width: 100%; }
 
 
 @media (max-width: 800px) {
-  .section { padding: 56px 24px; }
-  .section::before { left: 24px; }
-  .section::after { right: 24px; }
   .section-head { grid-template-columns: 1fr; }
   .section-title { text-align: left; }
 }
@@ -436,7 +450,6 @@ img { display: block; max-width: 100%; }
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
-  margin-bottom: 56px;
 }
 
 .stat {
@@ -666,7 +679,7 @@ img { display: block; max-width: 100%; }
 
 @media (max-width: 900px) {
   .who-layout { grid-template-columns: 1fr; min-height: auto; }
-  .who-image-col { padding: 32px 24px; }
+  .who-image-col { display: none; }
   .who-block { padding: 28px 24px; }
 }
 
@@ -1073,15 +1086,7 @@ img { display: block; max-width: 100%; }
   .values-stage { max-width: 320px; aspect-ratio: 1; }
   .values-word.top, .values-word.bottom-word { display: none; }
   .values-word.left, .values-word.right { display: none; }
-  .values-mobile-words { display: flex; }
-  .values-mobile-words .v-word {
-    font-family: var(--font-head);
-    font-weight: 800;
-    font-size: clamp(72px, 18vw, 120px);
-    letter-spacing: -0.03em;
-    color: var(--neutral);
-    text-transform: uppercase;
-  }
+  .values-mobile-words { display: none; }
 }
 
 /* ============== ABOUT — uneven grid ============== */
@@ -1321,19 +1326,13 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 900px) {
-  .manifesto-ship {
-    position: static;
-    transform: none;
-    width: 100%;
-    max-width: 360px;
-    margin: 0 auto 24px;
-  }
+  .manifesto-ship { display: none; }
 }
 
 .manifesto-main {
   font-family: var(--font-head);
   font-weight: 800;
-  font-size: var(--type-heading-sm);
+  font-size: clamp(13px, 4.2vw, 32px);
   line-height: 1.3;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -1344,6 +1343,7 @@ img { display: block; max-width: 100%; }
 .manifesto-route-copy,
 .manifesto-note {
   display: block;
+  white-space: nowrap;
 }
 
 .manifesto-lead,
@@ -1598,7 +1598,7 @@ a.value:hover { color: var(--primary); }
 @media (max-width: 900px) {
   .form-grid { grid-template-columns: 1fr; gap: 40px; }
   .field-row .field { border-right: none; padding: 18px 0; border-bottom: 1px solid var(--line); }
-  .field-row .field:last-child { border-bottom: none; padding-left: 0; padding-right: 0; }
+  .field-row .field:last-child { padding-left: 0; padding-right: 0; }
 }
 
 /* ============== FOOTER ============== */
@@ -1784,11 +1784,6 @@ a.value:hover { color: var(--primary); }
 
 /* Tablet & below */
 @media (max-width: 768px) {
-  /* Section paddings tighter */
-  .section { padding: 48px 20px; }
-  .section::before { left: 20px; }
-  .section::after { right: 20px; }
-  .section-head { margin-bottom: 40px; }
 
   /* Nav */
   .nav { padding: 12px 20px; gap: 12px; }
@@ -1807,14 +1802,14 @@ a.value:hover { color: var(--primary); }
   }
 
   /* What — stat cards stack */
-  .what-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 40px; }
+  .what-grid { grid-template-columns: 1fr; gap: 10px; }
   .stat { min-height: auto; padding: 24px 20px; gap: 14px; }
   .stat-num { font-size: clamp(56px, 14vw, 80px); }
-  .stat-text { font-size: var(--type-t3); max-width: none; }
+  .stat-text { max-width: none; }
 
   /* Tag grid: 4 → 2 columns */
   .tag-grid { grid-template-columns: repeat(2, 1fr); margin-top: 24px; }
-  .tag-box { padding: 22px 12px; font-size: 18px; }
+  .tag-box { padding: 22px 12px; }
 
   /* Who */
   .who-block { padding: 24px 20px; }
@@ -1830,29 +1825,21 @@ a.value:hover { color: var(--primary); }
   .route-text { font-size: 16px; }
   .route-text br { display: none; }
 
-  /* Manifesto */
-  .manifesto-block { padding: 8px 0 40px; }
-  .manifesto-main { font-size: 22px; line-height: 1.25; }
-  .manifesto-lead,
-  .manifesto-route-copy { margin-bottom: 14px; }
-  .manifesto-route-copy br,
-  .manifesto-note br { display: none; }
 
   /* Partners — real layout used in markup is .partners-layout */
   .partners-layout {
     grid-template-columns: 1fr;
   }
-  .partner-simple { padding: 32px 20px; gap: 20px; }
+  .partner-simple { padding: 16px 20px; gap: 16px; }
   .partner-desc { font-size: 14px; max-width: none; }
   .partner-logo-img { height: 44px; }
   .partner-logo-img.gazprom { height: 36px; margin-left: 0; }
   .partner-logo-img.t1 { height: 28px; }
   .partner-ship-col {
-    order: 3;
-    padding: 16px;
+    padding: 4px 16px;
     transform: none;
   }
-  .partner-ship-col img { width: 140px; }
+  .partner-ship-col img { width: 120px; }
 
   /* Form */
   .form-grid { grid-template-columns: 1fr; gap: 28px; }
@@ -1880,10 +1867,6 @@ a.value:hover { color: var(--primary); }
 
 /* Phones — 414 / 375 */
 @media (max-width: 480px) {
-  .section { padding: 40px 16px; }
-  .section::before { left: 16px; }
-  .section::after { right: 16px; }
-  .section-head { margin-bottom: 32px; gap: 12px; }
   .section-title { font-size: clamp(26px, 8.5vw, 40px); }
 
   /* Nav */
@@ -1915,8 +1898,7 @@ a.value:hover { color: var(--primary); }
   /* What */
   .stat-num { font-size: clamp(52px, 16vw, 72px); }
   .stat-num .unit { font-size: 0.32em; }
-  .stat-text { font-size: 15px; }
-  .tag-box { padding: 18px 8px; font-size: 16px; }
+  .tag-box { padding: 18px 8px; }
 
   /* Who */
   .who-block { padding: 20px 16px; }
@@ -1930,9 +1912,6 @@ a.value:hover { color: var(--primary); }
   .route-time { font-size: 18px; }
   .route-text { font-size: 14px; }
   .route-place { font-size: 10px; }
-
-  /* Manifesto */
-  .manifesto-main { font-size: 18px; }
 
   /* Partners */
   .partner-simple { padding: 28px 16px; gap: 16px; }
@@ -1959,9 +1938,6 @@ a.value:hover { color: var(--primary); }
 
 /* Extra-small phones — 320 / 360 */
 @media (max-width: 375px) {
-  .section { padding: 36px 14px; }
-  .section::before { left: 14px; }
-  .section::after { right: 14px; }
   .section-title { font-size: clamp(22px, 8vw, 32px); }
 
   .nav { padding: 8px 14px; gap: 8px; }
@@ -1975,7 +1951,7 @@ a.value:hover { color: var(--primary); }
   .btn { padding: 13px 16px; font-size: 13px; }
 
   .tag-grid { grid-template-columns: 1fr 1fr; }
-  .tag-box { padding: 16px 6px; font-size: 14px; }
+  .tag-box { padding: 16px 6px; }
 
   .stat { padding: 20px 16px; }
   .stat-num { font-size: clamp(48px, 17vw, 64px); }
@@ -1985,14 +1961,146 @@ a.value:hover { color: var(--primary); }
   .route-time { font-size: 16px; }
   .route-text { font-size: 13px; }
 
-  .manifesto-main { font-size: 16px; }
-
   .form-info h3 { font-size: 22px; }
   .field input { font-size: 16px; }
   .form-submit { padding: 14px 16px; font-size: 13px; }
 
   .footer-cell-right { flex-direction: column; gap: 14px; }
 }
+
+/* ============== SECTION OVERRIDES (moved from inline styles) ============== */
+#program.section {
+  border-top: none;
+  padding-bottom: 24px;
+}
+#values.section {
+  overflow: hidden;
+  border-top: none;
+  padding-top: 50px;
+  padding-bottom: 16px;
+}
+#about.section {
+  border-top: none;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+#partners.section,
+#form.section {
+  border-top: none;
+}
+
+.partners-title { margin-bottom: 32px; }
+
+/* ============== MOBILE TYPOGRAPHY & SPACING SYSTEM ============== */
+/* Single source of truth for mobile: H1/H2/H3 + T1/T2 + 2 spacing tokens */
+@media (max-width: 768px) {
+  /* Edge-to-edge layout: sections lose horizontal padding,
+     the gutter is handled by .section-inner so structural grids
+     can bleed via negative margins. */
+  .section { padding: var(--m-gap-section) 0; }
+  .section::before, .section::after { display: none; }
+  .section-inner { padding-left: 16px; padding-right: 16px; }
+
+  /* Headings & their containers: left-aligned on mobile */
+  .section-head {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .section-title { text-align: left; }
+  .section-tag { justify-content: flex-start; }
+
+  /* Spacing — equalize between blocks and below headings */
+  .section-head { margin-bottom: var(--m-gap-title); }
+  .what-grid { margin-bottom: var(--m-gap-title); }
+  .manifesto-block { padding-top: 0; padding-bottom: var(--m-gap-section); }
+  #program.section { padding-bottom: var(--m-gap-section); }
+  #values.section,
+  #about.section { padding-top: var(--m-gap-section); padding-bottom: var(--m-gap-section); }
+
+
+  /* Full-bleed structural grids — extend past the inner gutter */
+  .tag-grid,
+  .who-layout,
+  .partners-layout {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
+  /* All content CTA buttons stretch full-width on mobile */
+  .btn {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  .form-submit {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Typography — unified scale */
+  .section-title,
+  .about-big h3,
+  .form-success-title {
+    font-size: var(--m-h1);
+    line-height: 1;
+  }
+  .who-block-title,
+  .tag-box,
+  .route-time,
+  .form-info h3 {
+    font-size: var(--m-h2);
+    line-height: 1.15;
+  }
+  .manifesto-main {
+    font-size: var(--m-h3);
+    line-height: 1.3;
+  }
+  .who-row,
+  .who-benefit-row,
+  .stat-text,
+  .partner-desc,
+  .route-text,
+  .form-info p,
+  .field input,
+  .form-submit,
+  .footer-cell .value,
+  .footer-cell a.value,
+  .form-contact .value {
+    font-size: var(--m-t1);
+    line-height: 1.4;
+  }
+  .mono,
+  .section-tag,
+  .partner-role,
+  .partner-tag,
+  .route-place,
+  .form-contact .label,
+  .footer-cell .label,
+  .field label,
+  .form-badge-note,
+  .footer-bottom,
+  .hero-scroll,
+  .program-prompt-label,
+  .hero-date {
+    font-size: var(--m-t2);
+    line-height: 1.4;
+  }
+}
+
+/* ============== FLUID INTERNAL RHYTHM ============== */
+.what-grid { margin-bottom: var(--block-gap); }
+/* manifesto: fixed internal rhythm — only font scales */
+.footer-brand {
+  margin-bottom: clamp(24px, 5vw, 64px);
+  padding-bottom: clamp(20px, 3vw, 48px);
+}
+.footer-brand img { height: clamp(36px, 4vw, 56px); }
+
+/* Override inline-style-derived overrides to scale with viewport too */
+#program.section  { padding-bottom: clamp(8px, 2vw, 24px); }
+#values.section   { padding-top: clamp(24px, 4vw, 50px); padding-bottom: clamp(0px, 1vw, 16px); }
+#about.section    { padding-top: clamp(12px, 3vw, 40px); padding-bottom: clamp(12px, 3vw, 40px); }
 
 </style>
 <style>#inspect-element-top-layer * { all: unset; }</style><script>"use strict";
@@ -2799,9 +2907,8 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
   </div>
 
   <div class="hero-scroll">
-    <span>Scroll</span>
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M8 3 L8 13 M3 8 L8 13 L13 8" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+    <svg width="36" height="36" viewBox="0 0 16 16" fill="none">
+      <path d="M8 3 L8 13 M3 8 L8 13 L13 8" stroke="rgba(255,255,255,0.55)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
     </svg>
   </div>
 
@@ -2885,7 +2992,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
 <!-- ====================================================================== -->
 <!-- PROGRAM — zigzag with ship -->
 <!-- ====================================================================== -->
-<section class="section" id="program" style="border-top:none; padding-bottom:24px;">
+<section class="section" id="program">
   <div class="section-inner">
     <div class="section-head reveal">
       <div class="section-tag"><span class="dash"></span>03 / Расписание</div>
@@ -2970,7 +3077,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
 <!-- ====================================================================== -->
 <!-- VALUES — rotating fish circle with words around -->
 <!-- ====================================================================== -->
-<section class="section" id="values" style="overflow:hidden; border-top:none; padding-top:50px; padding-bottom:16px;">
+<section class="section" id="values">
   <div class="section-inner">
     <div class="values-stage">
       <div class="values-fish">
@@ -2997,7 +3104,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
 <!-- ====================================================================== -->
 <!-- MANIFESTO — big text -->
 <!-- ====================================================================== -->
-<section class="section" id="about" style="border-top:none; padding-top:40px; padding-bottom:40px;">
+<section class="section" id="about">
   <div class="section-inner">
     <div class="manifesto-block">
       <div class="manifesto-ship" aria-hidden="true">
@@ -3015,9 +3122,9 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
 <!-- ====================================================================== -->
 <!-- PARTNERS -->
 <!-- ====================================================================== -->
-<section class="section" id="partners" style="border-top:none;">
+<section class="section" id="partners">
   <div class="section-inner">
-    <h2 class="section-title" style="margin-bottom:32px;">Генеральные партнеры<br>Цифрохода</h2>
+    <h2 class="section-title partners-title">Генеральные партнеры<br>Цифрохода</h2>
     <div class="partners-layout">
       <div class="partner-simple reveal">
         <div class="partner-logo">
@@ -3047,10 +3154,10 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
 <!-- ====================================================================== -->
 <!-- FORM -->
 <!-- ====================================================================== -->
-<section class="section" id="form" style="border-top:none;">
+<section class="section" id="form">
   <div class="section-inner">
-    <div class="section-head reveal" style="grid-template-columns: 1fr; text-align: center;">
-      <div class="section-tag" style="justify-content: center;"><span class="dash"></span>07 / Регистрация</div>
+    <div class="section-head reveal">
+      <div class="section-tag"><span class="dash"></span>07 / Регистрация</div>
       <h2 class="section-title">Подтвердите <em>участие</em></h2>
     </div>
 
