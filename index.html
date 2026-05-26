@@ -570,47 +570,11 @@ img { display: block; max-width: 100%; }
 }
 
 .what-geo-map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.what-geo-label {
-  position: relative;
-  z-index: 2;
-  font-family: var(--font-head);
-  font-size: var(--type-heading-sm);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  color: var(--primary);
-}
-
-#geo-map-base {
-  stroke: rgba(255, 255, 255, 0.12);
-}
-
-#geo-map {
-  stroke: #FFFDC0;
-  stroke-dasharray: 3500;
-  stroke-dashoffset: 3500;
-  animation: geo-draw 9.5s linear infinite;
-  animation-play-state: paused;
-}
-
-#geo-map.geo-running {
-  animation-play-state: running;
-}
-
-@keyframes geo-draw {
-  0%   { stroke-dashoffset: 3500; opacity: 0; }
-  3%   { stroke-dashoffset: 3420; opacity: 0.85; }
-  15%  { stroke-dashoffset: 2800; opacity: 0.9; }
-  68%  { stroke-dashoffset: 500;  opacity: 0.9; }
-  84%  { stroke-dashoffset: 0;    opacity: 0.9; }
-  89%  { stroke-dashoffset: 3500; opacity: 0; }
-  100% { stroke-dashoffset: 3500; opacity: 0; }
+  width: auto;
+  height: 90%;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
 }
 
 .what-slider {
@@ -2874,7 +2838,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
       </div>
       <div class="what-photos">
         <div class="what-geo">
-          <img src="./assets/Peterhof_map.svg" style="height:90%;width:auto;display:block;margin:0 auto;">
+          <img class="what-geo-map" src="./assets/Peterhof_map.svg" alt="Схема Петергофа">
         </div>
         <div class="what-slider">
           <img class="what-slide active" src="./assets/Petergof.jpg" alt="Петергоф">
