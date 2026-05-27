@@ -55,6 +55,7 @@
   /* Mobile-only spacing system */
   --m-gap-section: 48px;
   --m-gap-title: 24px;
+  --m-gutter: 20px;
 }
 
 *, *::before, *::after {
@@ -63,13 +64,19 @@
   padding: 0;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
 
 body {
   font-family: var(--font-body);
   background: var(--bg);
   color: var(--neutral);
   overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -247,7 +254,7 @@ img { display: block; max-width: 100%; }
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 118px 64px 28px;
+  padding: 88px 64px 28px;
   overflow: visible;   /* ship & label bleed into 2nd screen on scroll */
   border-bottom: 1px solid var(--line);
 }
@@ -333,15 +340,16 @@ img { display: block; max-width: 100%; }
 }
 
 .hero-actions {
-  margin-top: 16px;
-}
-
-.hero-actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(20px, 3vw, 36px);
+  z-index: 6;
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 4px;
+  padding: 0 var(--section-pad-x);
 }
 
 .btn {
@@ -408,29 +416,6 @@ img { display: block; max-width: 100%; }
   .hero-waves-svg { height: 70%; }
 }
 
-/* scroll cue */
-.hero-scroll {
-  margin-top: 56px;
-  padding-bottom: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: var(--type-label);
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  z-index: 5;
-  position: relative;
-  animation: bounce 2.4s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
 @media (max-width: 800px) {
   .hero { padding: 72px 24px 18px; min-height: 92vh; }
   .hero::before { left: 24px; }
@@ -441,8 +426,7 @@ img { display: block; max-width: 100%; }
   .hero-center { gap: 16px; padding-top: 50px; }
   .hero-logo-img { width: min(76vw, 380px); }
   .hero-desc { max-width: 330px; font-size: var(--type-t3); }
-  .hero-actions { gap: 10px; }
-  .hero-scroll { margin-top: 34px; }
+  .hero-actions { gap: 10px; padding: 0 24px; }
 }
 
 /* ============== WHAT ============== */
@@ -1075,7 +1059,7 @@ img { display: block; max-width: 100%; }
   /* Edge-to-edge sections below 3-col desktop layout */
   .section { padding-left: 0; padding-right: 0; }
   .section::before, .section::after { display: none; }
-  .section-inner { padding-left: 16px; padding-right: 16px; }
+  .section-inner { padding-left: var(--m-gutter); padding-right: var(--m-gutter); }
 }
 
 .partner-ship-col {
@@ -1355,7 +1339,7 @@ img { display: block; max-width: 100%; }
 .manifesto-main {
   font-family: var(--font-head);
   font-weight: 800;
-  font-size: clamp(13px, 4.2vw, 32px);
+  font-size: clamp(10px, 4vw, 32px);
   line-height: 1.3;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -1367,6 +1351,15 @@ img { display: block; max-width: 100%; }
 .manifesto-note {
   display: block;
   white-space: nowrap;
+}
+
+/* Safety: below standard mobile widths, let text wrap to prevent overflow */
+@media (max-width: 320px) {
+  .manifesto-lead,
+  .manifesto-route-copy,
+  .manifesto-note {
+    white-space: normal;
+  }
 }
 
 .manifesto-lead,
@@ -1774,7 +1767,7 @@ a.value:hover { color: var(--primary); }
   opacity: 0.72;
   will-change: transform;
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 18%);
-  mask-image:         linear-gradient(to right, transparent 0%, black 18%);
+  mask-image: linear-gradient(to right, transparent 0%, black 18%);
   animation: ship-float 7s ease-in-out 2.4s infinite;
 }
 
@@ -1807,8 +1800,28 @@ a.value:hover { color: var(--primary); }
   }
 }
 
-@media (max-width: 390px) {
-  .hero-motion-group { display: none; }
+/* Use inline ship on all screens; absolute parallax ship retired */
+.hero-motion-group { display: none; }
+
+.hero-ship-inline {
+  display: block;
+  width: min(64vw, 560px);
+  margin: 8px auto 0;
+  pointer-events: none;
+  /* The ship artwork sits in the right portion of the SVG canvas (mask + intrinsic
+     offset). Shift left so the visible silhouette aligns with the screen center. */
+  transform: translateX(-20%);
+}
+.hero-ship-inline img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hero-ship-inline {
+    width: min(80%, 300px);
+  }
 }
 
 /* ============== MOBILE ADAPTATION (≤768 / ≤480 / ≤375) ============== */
@@ -1821,12 +1834,38 @@ a.value:hover { color: var(--primary); }
   .nav-cta { padding: 10px 14px; font-size: 12px; }
   .nav-logo img { height: 18px; }
 
-  /* Hero */
-  .hero { padding: 64px 20px 16px; min-height: 90vh; }
-  .hero::before { left: 20px; }
-  .hero::after { right: 20px; }
-  .hero-actions { gap: 8px; justify-content: center; flex-wrap: wrap; }
-  .hero-actions .btn { padding: 14px 20px; }
+  /* Hero — full viewport height with content distributed, actions pinned to bottom */
+  .hero {
+    padding-left: var(--m-gutter);
+    padding-right: var(--m-gutter);
+    padding-top: 64px;
+    padding-bottom: 24px;
+    min-height: 100vh;
+    min-height: 100svh;
+    justify-content: flex-start;
+  }
+  .hero::before { left: var(--m-gutter); }
+  .hero::after { right: var(--m-gutter); }
+  .hero-center {
+    flex: 1;
+    width: 100%;
+    transform: none;
+    padding-top: 0;
+    justify-content: center;
+  }
+  /* Hero CTAs on mobile: stacked, full-width, pinned to the bottom of hero */
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .hero-actions .btn {
+    width: 100%;
+    max-width: none;
+    padding: 18px 20px;
+  }
 
   /* What — stat cards stack */
   .what-grid { grid-template-columns: 1fr; gap: 10px; }
@@ -1870,7 +1909,7 @@ a.value:hover { color: var(--primary); }
 
   /* Footer */
   .footer { padding: 48px 0 24px; }
-  .footer-inner { padding: 0 16px; }
+  .footer-inner { padding: 0 var(--m-gutter); }
   .footer-brand { margin-bottom: 32px; padding-bottom: 24px; }
   .footer-brand img { height: 40px; }
   .footer-row { grid-template-columns: 1fr; gap: 20px; padding: 24px 0; }
@@ -1891,10 +1930,8 @@ a.value:hover { color: var(--primary); }
   }
   .nav-cta svg { width: 12px; height: 12px; }
 
-  /* Hero */
-  .hero { padding: 56px 16px 12px; }
-  .hero::before { left: 16px; }
-  .hero::after { right: 16px; }
+  /* Hero — gutter inherited from --m-gutter, just tweak vertical padding */
+  .hero { padding-top: 56px; padding-bottom: 16px; }
   .hero-corner.tl, .hero-corner.bl { left: 8px; }
   .hero-corner.tr, .hero-corner.br { right: 8px; }
   .hero-date {
@@ -1902,11 +1939,10 @@ a.value:hover { color: var(--primary); }
     margin-bottom: 16px;
     letter-spacing: 0.1em;
   }
-  .hero-center { gap: 14px; padding-top: 32px; transform: translateY(-30px); }
+  .hero-center { gap: 14px; }
   .hero-logo-img { width: min(80vw, 320px); }
   .hero-desc { font-size: 15px; max-width: 100%; padding: 0 6px; }
   .btn { padding: 14px 18px; }
-  .hero-scroll { margin-top: 24px; font-size: 10px; padding-bottom: 16px; }
 
   /* What */
   .stat-num { font-size: clamp(52px, 16vw, 72px); }
@@ -1942,9 +1978,7 @@ a.value:hover { color: var(--primary); }
   .nav { padding: 8px 14px; gap: 8px; }
   .nav-cta { padding: 7px 10px; }
 
-  .hero { padding: 48px 14px 8px; min-height: 88vh; }
-  .hero::before { left: 14px; }
-  .hero::after { right: 14px; }
+  .hero { padding-top: 48px; padding-bottom: 12px; }
   .hero-logo-img { width: 78vw; }
   .hero-desc { font-size: 14px; }
   .btn { padding: 13px 16px; }
@@ -2015,25 +2049,20 @@ a.value:hover { color: var(--primary); }
   .tag-grid,
   .who-layout,
   .partners-layout {
-    margin-left: -16px;
-    margin-right: -16px;
+    margin-left: calc(-1 * var(--m-gutter));
+    margin-right: calc(-1 * var(--m-gutter));
   }
 
-  /* CTA buttons: content-sized with comfortable max (UX best practice ~150–320px) */
-  .btn {
-    display: inline-flex;
-    width: auto;
-    max-width: 320px;
+  /* CTA buttons on mobile: full-width, stacked */
+  .btn,
+  .form-submit {
+    display: flex;
+    width: 100%;
+    max-width: none;
     justify-content: center;
     text-align: center;
   }
-  .form-submit {
-    width: auto;
-    max-width: 320px;
-    justify-content: space-between;
-  }
-  .hero-actions { justify-content: center; }
-  #routeExit { text-align: center; }
+  .form-submit { justify-content: space-between; }
 
   /* Typography — unified scale */
   .section-title,
@@ -2076,7 +2105,6 @@ a.value:hover { color: var(--primary); }
   .field label,
   .form-badge-note,
   .footer-bottom,
-  .hero-scroll,
   .program-prompt-label,
   .hero-date {
     font-size: var(--m-t2);
@@ -2883,29 +2911,27 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
     <p class="hero-desc">
       Уникальное отраслевое мероприятие для профи в области ИТ
     </p>
-    <div class="hero-actions">
-      <a href="#form" class="btn btn-primary">
-        Подтвердить участие
-        <span class="arrow">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7 L11 7 M7 3 L11 7 L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        </span>
-      </a>
-      <a href="#program" class="btn btn-secondary">
-        Посмотреть маршрут
-      </a>
+    <div class="hero-ship-inline" aria-hidden="true">
+      <img src="./assets/Ship_ First Screen.svg" alt="" class="hero-ship-img">
     </div>
+  </div>
+
+  <div class="hero-actions">
+    <a href="#form" class="btn btn-primary">
+      Подтвердить участие
+      <span class="arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7 L11 7 M7 3 L11 7 L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </span>
+    </a>
+    <a href="#program" class="btn btn-secondary">
+      Посмотреть маршрут
+    </a>
   </div>
 
   <div class="hero-overlay"></div>
 
   <div class="hero-waves" id="heroWaves">
     <img src="./assets/W5.svg" alt="" class="hero-waves-svg">
-  </div>
-
-  <div class="hero-scroll">
-    <svg width="36" height="36" viewBox="0 0 16 16" fill="none">
-      <path d="M8 3 L8 13 M3 8 L8 13 L13 8" stroke="rgba(255,255,255,0.55)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
   </div>
 
   <div class="hero-motion-group" id="heroMotionGroup" aria-hidden="true" style="transform: translateY(0px); opacity: 1;">
