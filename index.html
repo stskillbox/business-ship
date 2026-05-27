@@ -340,16 +340,23 @@ img { display: block; max-width: 100%; }
 }
 
 .hero-actions {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: clamp(20px, 3vw, 36px);
   z-index: 6;
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 0 var(--section-pad-x);
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .hero-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(20px, 3vw, 36px);
+    margin-top: 0;
+    padding: 0 24px;
+  }
 }
 
 .btn {
@@ -385,30 +392,32 @@ img { display: block; max-width: 100%; }
 /* waves layer */
 .hero-waves {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -150px;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(155deg, black 0%, black 25%, transparent 60%);
-          mask-image: linear-gradient(155deg, black 0%, black 25%, transparent 60%);
+  mask-image: linear-gradient(155deg, black 0%, black 25%, transparent 60%);
 }
 
 .hero-waves-svg {
   position: absolute;
-  left: calc(-72% - 50px);
+  left: calc(-72% + 150px);
   top: 50%;
-  height: 469%;
+  transform: translateY(-50%);
+  height: 414%;
   width: auto;
   max-width: none;
   opacity: 0.55;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
-          mask-image: linear-gradient(to bottom, black 0%, black 65%, transparent 100%);
   animation: wave-drift-left 16s ease-in-out infinite;
 }
 
 @keyframes wave-drift-left {
-  0%, 100% { transform: translateY(calc(-50% + 700px)) translateX(0); }
-  50%       { transform: translateY(calc(-50% + 700px)) translateX(-18px); }
+  0%, 100% { transform: translateY(calc(-50% + 765px)) translateX(0); }
+  50%       { transform: translateY(calc(-50% + 765px)) translateX(-18px); }
 }
 
 @media (max-width: 900px) {
@@ -1803,18 +1812,9 @@ a.value:hover { color: var(--primary); }
   }
 }
 
-/* Use inline ship on all screens; absolute parallax ship retired */
-.hero-motion-group { display: none; }
+/* Desktop: animated absolute ship.  Mobile: inline ship below desc. */
+.hero-ship-inline { display: none; }
 
-.hero-ship-inline {
-  display: block;
-  width: min(64vw, 560px);
-  margin: 8px auto 0;
-  pointer-events: none;
-  /* The ship artwork sits in the right portion of the SVG canvas (mask + intrinsic
-     offset). Shift left so the visible silhouette aligns with the screen center. */
-  transform: translateX(-20%);
-}
 .hero-ship-inline img {
   width: 100%;
   height: auto;
@@ -1822,8 +1822,14 @@ a.value:hover { color: var(--primary); }
 }
 
 @media (max-width: 768px) {
+  .hero-motion-group { display: none; }
   .hero-ship-inline {
+    display: block;
     width: min(80%, 300px);
+    margin: 8px auto 0;
+    pointer-events: none;
+    /* Compensate the SVG's left-side mask so the visible silhouette is centered. */
+    transform: translateX(-20%);
   }
 }
 
@@ -2939,7 +2945,7 @@ window.__TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
   <div class="hero-overlay"></div>
 
   <div class="hero-waves" id="heroWaves">
-    <img src="./assets/W5.svg" alt="" class="hero-waves-svg">
+    <img src="./assets/W.svg" alt="" class="hero-waves-svg">
   </div>
 
   <div class="hero-motion-group" id="heroMotionGroup" aria-hidden="true" style="transform: translateY(0px); opacity: 1;">
